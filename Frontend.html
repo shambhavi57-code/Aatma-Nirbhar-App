@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atma-Nirbhar — OmniNexus</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --saffron: #E8650A;
+    --deep-saffron: #C45000;
+    --turmeric: #D4A017;
+    --gold: #C9A84C;
+    --maroon: #6B0F1A;
+    --deep-maroon: #4A0A12;
+    --green: #1A5632;
+    --cream: #FDF5E6;
+    --warm-white: #FFF8F0;
+    --sand: #E8D5B7;
+    --terracotta: #C75B39;
+    --indigo-deep: #1B1464;
+    --rose: #D4566A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .font-yatra { font-family: 'Yatra One', cursive; }
+
+  /* Mandala SVG background */
+  .mandala-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .mandala-bg svg {
+    position: absolute;
+    opacity: 0.04;
+    animation: mandalaRotate 120s linear infinite;
+  }
+
+  @keyframes mandalaRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes mandalaRotateReverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  @keyframes floatUp {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.06; }
+    50% { transform: translateY(-30px) scale(1.05); opacity: 0.1; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(232, 101, 10, 0.15); }
+    50% { box-shadow: 0 0 40px rgba(232, 101, 10, 0.3); }
+  }
+
+  @keyframes slideInRight {
+    from { transform: translateX(30px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes lotusBloom {
+    0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  .animate-slide-in { animation: slideInRight 0.4s ease-out forwards; }
+  .animate-slide-up { animation: slideInUp 0.5s ease-out forwards; }
+  .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+  .animate-lotus { animation: lotusBloom 0.6s ease-out forwards; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--turmeric); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 78px;
+    background: linear-gradient(180deg, var(--deep-maroon) 0%, #2D0A10 50%, #1A0610 100%);
+    border-right: 1px solid rgba(201, 168, 76, 0.15);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+  }
+
+  .sidebar:hover { width: 220px; }
+
+  .sidebar .nav-label {
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.2s ease 0.1s;
+  }
+
+  .sidebar:hover .nav-label { opacity: 1; }
+
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 22px;
+    color: rgba(255, 248, 240, 0.5);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.06);
+  }
+
+  .nav-item.active {
+    color: var(--gold);
+    background: rgba(201, 168, 76, 0.1);
+    border-left-color: var(--gold);
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+  }
+
+  /* Page content */
+  .page-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .page { display: none; height: 100%; }
+  .page.active { display: flex; flex-direction: column; }
+
+  /* Cards */
+  .service-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--saffron), var(--turmeric), var(--gold));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(107, 15, 26, 0.1);
+    border-color: rgba(201, 168, 76, 0.35);
+  }
+
+  .service-card:hover::before { opacity: 1; }
+
+  /* Chat */
+  .chat-bubble-user {
+    background: linear-gradient(135deg, var(--saffron), var(--deep-saffron));
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    padding: 12px 18px;
+    max-width: 75%;
+    animation: slideInUp 0.3s ease-out;
+  }
+
+  .chat-bubble-ai {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    color: #2D0A10;
+    border-radius: 18px 18px 18px 4px;
+    padding: 12px 18px;
+    max-width: 75%;
+    animation: slideInUp 0.3s ease-out;
+  }
+
+  .typing-indicator span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--turmeric);
+    border-radius: 50%;
+    margin: 0 2px;
+  }
+
+  .typing-indicator span:nth-child(1) { animation: typingDot 1.2s infinite 0s; }
+  .typing-indicator span:nth-child(2) { animation: typingDot 1.2s infinite 0.2s; }
+  .typing-indicator span:nth-child(3) { animation: typingDot 1.2s infinite 0.4s; }
+
+  /* Wallet card */
+  .wallet-card {
+    background: linear-gradient(135deg, var(--deep-maroon) 0%, var(--maroon) 40%, #8B1530 100%);
+    border-radius: 20px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+
+  .wallet-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(201, 168, 76, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .wallet-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    left: -20%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(232, 101, 10, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background: rgba(26, 6, 16, 0.92);
+    backdrop-filter: blur(20px);
+    color: var(--warm-white);
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    z-index: 9999;
+    animation: slideInRight 0.4s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  /* Mini-app chips */
+  .mini-app-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: 50px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--deep-maroon);
+    font-weight: 500;
+  }
+
+  .mini-app-chip:hover {
+    background: rgba(201, 168, 76, 0.15);
+    border-color: var(--gold);
+    transform: scale(1.03);
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 6, 16, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  .modal-box {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 440px;
+    width: 90%;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    animation: lotusBloom 0.35s ease-out;
+    position: relative;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--saffron), var(--turmeric), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shimmer-text {
+    background: linear-gradient(90deg, var(--saffron), var(--turmeric), var(--gold), var(--saffron));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+
+  /* Input styles */
+  .input-field {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: var(--deep-maroon);
+    transition: all 0.25s ease;
+    outline: none;
+  }
+
+  .input-field:focus {
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+  }
+
+  .input-field::placeholder { color: rgba(107, 15, 26, 0.35); }
+
+  /* Button */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--saffron), var(--deep-saffron));
+    color: white;
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(232, 101, 10, 0.35);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--deep-maroon);
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: 1px solid rgba(107, 15, 26, 0.2);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    background: rgba(201, 168, 76, 0.06);
+  }
+
+  /* Stat cards */
+  .stat-ring {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  /* Paisley decorative element */
+  .paisley-corner {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  /* Chat list item */
+  .chat-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.06);
+  }
+
+  .chat-list-item:hover { background: rgba(201, 168, 76, 0.05); }
+  .chat-list-item.active { background: rgba(232, 101, 10, 0.06); }
+
+  /* Transaction row */
+  .txn-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+    transition: all 0.2s ease;
+  }
+
+  .txn-row:hover { padding-left: 6px; }
+
+  /* Top bar */
+  .top-bar {
+    background: rgba(253, 245, 230, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 40;
+    position: sticky;
+    top: 0;
+  }
+
+  /* Rangoli pattern border */
+  .rangoli-border {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--saffron) 0px,
+      var(--turmeric) 8px,
+      var(--gold) 16px,
+      var(--turmeric) 24px,
+      var(--saffron) 32px,
+      transparent 32px,
+      transparent 40px
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 60px; }
+    .sidebar:hover { width: 60px; }
+    .sidebar .nav-label { display: none !important; }
+    .top-bar { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Indian Aesthetic Background Layer -->
+<div class="mandala-bg" aria-hidden="true">
+  <!-- Large Mandala 1 -->
+  <svg width="900" height="900" viewBox="0 0 900 900" style="top:-200px; right:-200px; animation: mandalaRotate 120s linear infinite;">
+    <g fill="none" stroke="#C9A84C" stroke-width="0.5">
+      <circle cx="450" cy="450" r="420"/>
+      <circle cx="450" cy="450" r="380"/>
+      <circle cx="450" cy="450" r="340"/>
+      <circle cx="450" cy="450" r="300"/>
+      <circle cx="450" cy="450" r="260"/>
+      <circle cx="450" cy="450" r="220"/>
+      <circle cx="450" cy="450" r="180"/>
+      <circle cx="450" cy="450" r="140"/>
+      <circle cx="450" cy="450" r="100"/>
+      <circle cx="450" cy="450" r="60"/>
+      <!-- Petal patterns -->
+      <g id="petal-set-1">
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(0 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(30 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(60 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(90 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(120 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(150 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(180 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(210 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(240 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(270 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(300 450 450)"/>
+        <ellipse cx="450" cy="200" rx="30" ry="80" transform="rotate(330 450 450)"/>
+      </g>
+      <g id="petal-set-2">
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(15 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(45 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(75 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(105 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(135 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(165 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(195 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(225 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(255 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(285 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(315 450 450)"/>
+        <ellipse cx="450" cy="280" rx="18" ry="55" transform="rotate(345 450 450)"/>
+      </g>
+      <!-- Radial lines -->
+      <g stroke-width="0.3">
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(0 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(15 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(30 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(45 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(60 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(75 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(90 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(105 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(120 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(135 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(150 450 450)"/>
+        <line x1="450" y1="30" x2="450" y2="870" transform="rotate(165 450 450)"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- Large Mandala 2 -->
+  <svg width="600" height="600" viewBox="0 0 600 600" style="bottom:-150px; left:-100px; animation: mandalaRotateReverse 90s linear infinite;">
+    <g fill="none" stroke="#6B0F1A" stroke-width="0.6">
+      <circle cx="300" cy="300" r="280"/>
+      <circle cx="300" cy="300" r="240"/>
+      <circle cx="300" cy="300" r="200"/>
+      <circle cx="300" cy="300" r="160"/>
+      <circle cx="300" cy="300" r="120"/>
+      <circle cx="300" cy="300" r="80"/>
+      <circle cx="300" cy="300" r="40"/>
+      <g>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(0 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(24 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(48 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(72 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(96 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(120 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(144 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(168 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(192 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(216 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(240 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(264 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(288 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(312 300 300)"/>
+        <ellipse cx="300" cy="140" rx="22" ry="60" transform="rotate(336 300 300)"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- Small floating mandala -->
+  <svg width="200" height="200" viewBox="0 0 200 200" style="top:30%; left:40%; animation: floatUp 8s ease-in-out infinite;">
+    <g fill="none" stroke="#D4A017" stroke-width="0.4">
+      <circle cx="100" cy="100" r="90"/>
+      <circle cx="100" cy="100" r="70"/>
+      <circle cx="100" cy="100" r="50"/>
+      <circle cx="100" cy="100" r="30"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(0 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(45 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(90 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(135 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(180 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(225 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(270 100 100)"/>
+      <ellipse cx="100" cy="50" rx="10" ry="25" transform="rotate(315 100 100)"/>
+    </g>
+  </svg>
+
+  <!-- Lotus motif top-left -->
+  <svg width="150" height="150" viewBox="0 0 150 150" style="top:20px; left:80px; animation: floatUp 10s ease-in-out infinite 2s;">
+    <g fill="none" stroke="#C75B39" stroke-width="0.5">
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z"/>
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z" transform="rotate(30 75 75)"/>
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z" transform="rotate(60 75 75)"/>
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z" transform="rotate(90 75 75)"/>
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z" transform="rotate(120 75 75)"/>
+      <path d="M75 20 Q85 60 75 100 Q65 60 75 20Z" transform="rotate(150 75 75)"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Floating particles container -->
+<div id="particles" aria-hidden="true"></div>
+
+<!-- Main Layout -->
+<div class="flex h-screen relative z-10">
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar flex flex-col items-center py-4 flex-shrink-0" role="navigation" aria-label="Main navigation">
+    <!-- Logo -->
+    <div class="mb-6 flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-700 cursor-pointer" style="animation: pulseGlow 3s ease-in-out infinite;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2C10.5 5 8 7 8 10c0 2.2 1.8 4 4 4s4-1.8 4-4c0-3-2.5-5-4-8zM12 16c-3 0-6 2-6 5h12c0-3-3-5-6-5z"/>
+      </svg>
+    </div>
+
+    <div class="w-10 h-px bg-gradient-to-r from-transparent via-amber-600/30 to-transparent mb-4"></div>
+
+    <div class="flex flex-col w-full flex-1 gap-1">
+      <div class="nav-item active" data-page="home" onclick="switchPage('home')" role="button" tabindex="0" aria-label="Home">
+        <i class="fa-solid fa-om text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">Home</span>
+      </div>
+      <div class="nav-item" data-page="ai" onclick="switchPage('ai')" role="button" tabindex="0" aria-label="AI Agent">
+        <i class="fa-solid fa-brain text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">AI Agent</span>
+      </div>
+      <div class="nav-item" data-page="wallet" onclick="switchPage('wallet')" role="button" tabindex="0" aria-label="Wallet">
+        <i class="fa-solid fa-wallet text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">Wallet</span>
+      </div>
+      <div class="nav-item" data-page="chat" onclick="switchPage('chat')" role="button" tabindex="0" aria-label="Messages">
+        <i class="fa-solid fa-comment-dots text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">Messages</span>
+      </div>
+      <div class="nav-item" data-page="miniapps" onclick="switchPage('miniapps')" role="button" tabindex="0" aria-label="Mini Apps">
+        <i class="fa-solid fa-grid-2 text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">Mini Apps</span>
+      </div>
+      <div class="nav-item" data-page="profile" onclick="switchPage('profile')" role="button" tabindex="0" aria-label="Profile">
+        <i class="fa-solid fa-user text-lg w-6 text-center"></i>
+        <span class="nav-label text-sm font-medium">Profile</span>
+      </div>
+    </div>
+
+    <div class="w-10 h-px bg-gradient-to-r from-transparent via-amber-600/30 to-transparent mb-4"></div>
+
+    <div class="nav-item" onclick="showToast('Settings coming soon', 'fa-gear')" role="button" tabindex="0">
+      <i class="fa-solid fa-gear text-lg w-6 text-center"></i>
+      <span class="nav-label text-sm font-medium">Settings</span>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-content">
+
+    <!-- ====== HOME PAGE ====== -->
+    <div class="page active" id="page-home">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Namaste</p>
+          <h1 class="text-2xl font-bold mt-0.5" style="color: var(--deep-maroon);">Atma-Nirbhar</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="relative cursor-pointer" onclick="showToast('No new notifications', 'fa-bell')">
+            <i class="fa-solid fa-bell text-lg" style="color: var(--deep-maroon); opacity: 0.6;"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-[9px] flex items-center justify-center font-bold" style="background: var(--saffron);">3</span>
+          </div>
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-bold text-sm cursor-pointer" onclick="switchPage('profile')">A</div>
+        </div>
+      </div>
+
+      <div class="p-6 md:p-8 space-y-8">
+        <!-- Hero Banner -->
+        <div class="relative rounded-2xl overflow-hidden" style="background: linear-gradient(135deg, var(--deep-maroon) 0%, #3D0F1A 40%, var(--maroon) 100%); padding: 40px 36px; min-height: 200px;">
+          <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" viewBox="0 0 800 300">
+              <g fill="none" stroke="#C9A84C" stroke-width="0.4">
+                <circle cx="700" cy="150" r="130"/>
+                <circle cx="700" cy="150" r="100"/>
+                <circle cx="700" cy="150" r="70"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(0 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(36 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(72 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(108 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(144 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(180 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(216 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(252 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(288 700 150)"/>
+                <ellipse cx="700" cy="80" rx="12" ry="35" transform="rotate(324 700 150)"/>
+              </g>
+            </svg>
+          </div>
+          <div class="relative z-10">
+            <p class="text-amber-300/70 text-xs tracking-widest uppercase font-medium mb-2">OmniNexus Ecosystem</p>
+            <h2 class="font-yatra text-3xl md:text-4xl text-amber-100 mb-3" style="line-height:1.2;">Your Digital Universe,<br><span class="shimmer-text">Self-Reliant</span></h2>
+            <p class="text-amber-200/50 text-sm max-w-md leading-relaxed">One ecosystem. Infinite possibilities. AI agents orchestrate your tasks, payments, conversations, and services — all in one place.</p>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="service-card text-center" style="animation-delay: 0.1s;">
+            <div class="stat-ring mx-auto mb-3" style="background: rgba(232, 101, 10, 0.1); color: var(--saffron);">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+            <p class="text-2xl font-bold" style="color: var(--deep-maroon);" id="wallet-balance-home">24,580</p>
+            <p class="text-xs mt-1" style="color: var(--terracotta);">Wallet Balance</p>
+          </div>
+          <div class="service-card text-center">
+            <div class="stat-ring mx-auto mb-3" style="background: rgba(26, 86, 50, 0.1); color: var(--green);">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <p class="text-2xl font-bold" style="color: var(--deep-maroon);">Active</p>
+            <p class="text-xs mt-1" style="color: var(--terracotta);">Zero-Trust Status</p>
+          </div>
+          <div class="service-card text-center">
+            <div class="stat-ring mx-auto mb-3" style="background: rgba(212, 86, 106, 0.1); color: var(--rose);">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <p class="text-2xl font-bold" style="color: var(--deep-maroon);">147</p>
+            <p class="text-xs mt-1" style="color: var(--terracotta);">Tasks Automated</p>
+          </div>
+          <div class="service-card text-center">
+            <div class="stat-ring mx-auto mb-3" style="background: rgba(212, 160, 23, 0.1); color: var(--turmeric);">
+              <i class="fa-solid fa-cubes"></i>
+            </div>
+            <p class="text-2xl font-bold" style="color: var(--deep-maroon);">12</p>
+            <p class="text-xs mt-1" style="color: var(--terracotta);">Mini Apps</p>
+          </div>
+        </div>
+
+        <!-- Core Services Grid -->
+        <div>
+          <h3 class="text-lg font-bold mb-4" style="color: var(--deep-maroon);">Core Services</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="service-card" onclick="switchPage('ai')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(232,101,10,0.15), rgba(212,160,23,0.15)); color: var(--saffron);">
+                  <i class="fa-solid fa-brain"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">Agentic AI</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">Plan, reason, and execute multi-step tasks autonomously. Your intelligent orchestrator.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+
+            <div class="service-card" onclick="switchPage('wallet')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(26,86,50,0.15), rgba(34,139,34,0.1)); color: var(--green);">
+                  <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">Digital Wallet</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">Secure payments via Razorpay with AI-driven fraud detection and immutable audit logs.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+
+            <div class="service-card" onclick="switchPage('chat')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(212,86,106,0.15), rgba(199,91,57,0.1)); color: var(--rose);">
+                  <i class="fa-solid fa-comments"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">Secure Chat</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">End-to-end encrypted messaging with real-time Socket.IO powered delivery.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+
+            <div class="service-card" onclick="switchPage('miniapps')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(201,168,76,0.1)); color: var(--turmeric);">
+                  <i class="fa-solid fa-puzzle-piece"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">Mini Apps</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">Modular microservices ecosystem. Plug in new services without rebuilding.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+
+            <div class="service-card" onclick="showToast('Maps module loading...', 'fa-map-location-dot')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(27,20,100,0.12), rgba(75,0,130,0.08)); color: var(--indigo-deep);">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">OSM Maps</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">OpenStreetMap integration for location services, routing, and geo-fencing.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+
+            <div class="service-card" onclick="showToast('Blockchain verification active', 'fa-link')">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: linear-gradient(135deg, rgba(107,15,26,0.12), rgba(139,21,48,0.08)); color: var(--maroon);">
+                  <i class="fa-solid fa-link"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm" style="color: var(--deep-maroon);">Blockchain Ledger</h4>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">Immutable audit trails for agentic actions, smart contracts, and decentralized identity.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--sand);"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Mini-Apps Row -->
+        <div>
+          <h3 class="text-lg font-bold mb-4" style="color: var(--deep-maroon);">Active Mini-Apps</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="mini-app-chip" onclick="showToast('Opening Food Delivery...', 'fa-utensils')"><i class="fa-solid fa-utensils" style="color: var(--saffron);"></i> Food Delivery</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Ride Hailing...', 'fa-car')"><i class="fa-solid fa-car" style="color: var(--green);"></i> Ride Hailing</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Bill Pay...', 'fa-file-invoice')"><i class="fa-solid fa-file-invoice" style="color: var(--turmeric);"></i> Bill Pay</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Insurance...', 'fa-shield')"><i class="fa-solid fa-shield" style="color: var(--maroon);"></i> Insurance</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Shopping...', 'fa-bag-shopping')"><i class="fa-solid fa-bag-shopping" style="color: var(--rose);"></i> Shopping</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Travel...', 'fa-plane')"><i class="fa-solid fa-plane" style="color: var(--indigo-deep);"></i> Travel</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Health...', 'fa-heart-pulse')"><i class="fa-solid fa-heart-pulse" style="color: #e74c3c;"></i> Health</span>
+            <span class="mini-app-chip" onclick="showToast('Opening Education...', 'fa-graduation-cap')"><i class="fa-solid fa-graduation-cap" style="color: #8e44ad;"></i> Education</span>
+          </div>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div>
+          <h3 class="text-lg font-bold mb-4" style="color: var(--deep-maroon);">Ecosystem Architecture</h3>
+          <div class="service-card" style="padding: 28px;">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
+              <div class="text-center p-4 rounded-xl" style="background: rgba(232,101,10,0.06); border: 1px dashed rgba(232,101,10,0.2);">
+                <i class="fa-solid fa-user text-xl mb-2" style="color: var(--saffron);"></i>
+                <p class="text-xs font-semibold" style="color: var(--deep-maroon);">User Layer</p>
+                <p class="text-[10px] mt-1" style="color: rgba(107,15,26,0.4);">NLP / Vision / Voice</p>
+              </div>
+              <div class="text-center text-lg" style="color: var(--sand);">
+                <i class="fa-solid fa-arrows-left-right"></i>
+              </div>
+              <div class="text-center p-4 rounded-xl" style="background: rgba(212,160,23,0.06); border: 1px dashed rgba(212,160,23,0.2);">
+                <i class="fa-solid fa-brain text-xl mb-2" style="color: var(--turmeric);"></i>
+                <p class="text-xs font-semibold" style="color: var(--deep-maroon);">Agent Layer</p>
+                <p class="text-[10px] mt-1" style="color: rgba(107,15,26,0.4);">Orchestrator / Planner</p>
+              </div>
+              <div class="text-center text-lg" style="color: var(--sand);">
+                <i class="fa-solid fa-arrows-left-right"></i>
+              </div>
+              <div class="text-center p-4 rounded-xl" style="background: rgba(26,86,50,0.06); border: 1px dashed rgba(26,86,50,0.2);">
+                <i class="fa-solid fa-cubes text-xl mb-2" style="color: var(--green);"></i>
+                <p class="text-xs font-semibold" style="color: var(--deep-maroon);">Service Layer</p>
+                <p class="text-[10px] mt-1" style="color: rgba(107,15,26,0.4);">Microservices / Mini-Apps</p>
+              </div>
+            </div>
+            <div class="flex justify-center mt-4">
+              <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background: rgba(107,15,26,0.04); border: 1px dashed rgba(107,15,26,0.1);">
+                <i class="fa-solid fa-lock text-xs" style="color: var(--maroon);"></i>
+                <p class="text-[10px] font-medium" style="color: rgba(107,15,26,0.5);">Trust Layer: Zero-Trust Auth + Blockchain Verification + Encrypted Storage</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== AI AGENT PAGE ====== -->
+    <div class="page" id="page-ai">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Agentic AI</p>
+          <h1 class="text-xl font-bold" style="color: var(--deep-maroon);">Orchestrator Agent</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium" style="background: rgba(26,86,50,0.1); color: var(--green);">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Online
+          </span>
+        </div>
+      </div>
+
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Chat Area -->
+        <div class="flex-1 flex flex-col">
+          <div class="flex-1 overflow-y-auto p-6 space-y-4" id="ai-chat-messages">
+            <!-- Welcome message -->
+            <div class="flex items-start gap-3 animate-fade-in">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-om text-white text-xs"></i>
+              </div>
+              <div class="chat-bubble-ai">
+                <p class="text-sm leading-relaxed">Namaste! I am your Atma-Nirbhar Orchestrator Agent. I can plan and execute multi-step tasks across all connected services. Try asking me to:</p>
+                <ul class="text-xs mt-2 space-y-1 opacity-70">
+                  <li>"Book a ride to the airport and send ETA to my family"</li>
+                  <li>"Pay electricity bill and update my budget tracker"</li>
+                  <li>"Order dinner for 4 people with vegetarian options"</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Actions -->
+          <div class="px-6 pb-2">
+            <div class="flex flex-wrap gap-2" id="ai-suggestions">
+              <button class="mini-app-chip text-xs" onclick="sendAIMessage('Book a ride to the airport and message my family the ETA')"><i class="fa-solid fa-car" style="color: var(--green);"></i> Book ride + notify family</button>
+              <button class="mini-app-chip text-xs" onclick="sendAIMessage('Pay my electricity bill of ₹2,450 and update budget')"><i class="fa-solid fa-bolt" style="color: var(--turmeric);"></i> Pay bill + track budget</button>
+              <button class="mini-app-chip text-xs" onclick="sendAIMessage('Order vegetarian dinner for 4 from the best rated restaurant nearby')"><i class="fa-solid fa-utensils" style="color: var(--saffron);"></i> Order dinner for 4</button>
+            </div>
+          </div>
+
+          <!-- Input -->
+          <div class="p-4 border-t" style="border-color: rgba(201,168,76,0.1); background: rgba(253,245,230,0.5); backdrop-filter: blur(10px);">
+            <div class="flex items-center gap-3">
+              <input type="text" class="input-field flex-1" id="ai-input" placeholder="Describe your goal..." onkeydown="if(event.key==='Enter')sendAIInput()" aria-label="AI message input">
+              <button class="btn-primary px-4 py-3" onclick="sendAIInput()" aria-label="Send message">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== WALLET PAGE ====== -->
+    <div class="page" id="page-wallet">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Digital Wallet</p>
+          <h1 class="text-xl font-bold" style="color: var(--deep-maroon);">Payments & Finance</h1>
+        </div>
+        <button class="btn-secondary text-xs px-4 py-2" onclick="showAddMoneyModal()">
+          <i class="fa-solid fa-plus mr-1"></i> Add Money
+        </button>
+      </div>
+
+      <div class="p-6 md:p-8 space-y-6 overflow-y-auto flex-1">
+        <!-- Wallet Card -->
+        <div class="wallet-card animate-lotus">
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-8">
+              <p class="text-amber-300/60 text-xs tracking-widest uppercase">Total Balance</p>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-amber-300/40 text-sm"></i>
+                <span class="text-amber-300/40 text-[10px]">Secured</span>
+              </div>
+            </div>
+            <h2 class="text-4xl font-bold mb-1" id="wallet-balance-main">
+              <span class="text-amber-300/50 text-2xl">₹</span> 24,580<span class="text-2xl">.00</span>
+            </h2>
+            <p class="text-amber-200/30 text-xs mt-4">Atma-Nirbhar Wallet &middot; Powered by Razorpay</p>
+
+            <!-- Card decoration - small mandala -->
+            <svg class="absolute bottom-4 right-4 opacity-10" width="80" height="80" viewBox="0 0 80 80">
+              <g fill="none" stroke="#C9A84C" stroke-width="0.5">
+                <circle cx="40" cy="40" r="36"/>
+                <circle cx="40" cy="40" r="28"/>
+                <circle cx="40" cy="40" r="20"/>
+                <circle cx="40" cy="40" r="12"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(0 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(45 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(90 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(135 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(180 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(225 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(270 40 40)"/>
+                <ellipse cx="40" cy="20" rx="5" ry="12" transform="rotate(315 40 40)"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-4 gap-3">
+          <button class="service-card text-center !p-4" onclick="showSendMoneyModal()">
+            <i class="fa-solid fa-paper-plane text-lg mb-2" style="color: var(--saffron);"></i>
+            <p class="text-[11px] font-medium" style="color: var(--deep-maroon);">Send</p>
+          </button>
+          <button class="service-card text-center !p-4" onclick="showToast('QR Scanner opening...', 'fa-qrcode')">
+            <i class="fa-solid fa-qrcode text-lg mb-2" style="color: var(--green);"></i>
+            <p class="text-[11px] font-medium" style="color: var(--deep-maroon);">Scan QR</p>
+          </button>
+          <button class="service-card text-center !p-4" onclick="showToast('Requesting money...', 'fa-hand-holding-dollar')">
+            <i class="fa-solid fa-hand-holding-dollar text-lg mb-2" style="color: var(--turmeric);"></i>
+            <p class="text-[11px] font-medium" style="color: var(--deep-maroon);">Request</p>
+          </button>
+          <button class="service-card text-center !p-4" onclick="showToast('Opening transaction history...', 'fa-clock-rotate-left')">
+            <i class="fa-solid fa-clock-rotate-left text-lg mb-2" style="color: var(--maroon);"></i>
+            <p class="text-[11px] font-medium" style="color: var(--deep-maroon);">History</p>
+          </button>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div>
+          <h3 class="text-sm font-bold mb-3" style="color: var(--deep-maroon);">Recent Transactions</h3>
+          <div class="service-card !p-0 overflow-hidden" id="transactions-list">
+            <div class="txn-row px-5">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(26,86,50,0.1); color: var(--green);">
+                <i class="fa-solid fa-arrow-down text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium" style="color: var(--deep-maroon);">Money Added</p>
+                <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Today, 2:30 PM &middot; UPI</p>
+              </div>
+              <p class="text-sm font-bold" style="color: var(--green);">+₹5,000</p>
+            </div>
+            <div class="txn-row px-5">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(232,101,10,0.1); color: var(--saffron);">
+                <i class="fa-solid fa-utensils text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium" style="color: var(--deep-maroon);">Biryani Palace</p>
+                <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Today, 1:15 PM &middot; Food</p>
+              </div>
+              <p class="text-sm font-bold" style="color: var(--saffron);">-₹450</p>
+            </div>
+            <div class="txn-row px-5">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(232,101,10,0.1); color: var(--saffron);">
+                <i class="fa-solid fa-car text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium" style="color: var(--deep-maroon);">Ride to Office</p>
+                <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Yesterday, 9:00 AM &middot; Transport</p>
+              </div>
+              <p class="text-sm font-bold" style="color: var(--saffron);">-₹180</p>
+            </div>
+            <div class="txn-row px-5">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(232,101,10,0.1); color: var(--saffron);">
+                <i class="fa-solid fa-bolt text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium" style="color: var(--deep-maroon);">Electricity Bill</p>
+                <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Jul 15, 2026 &middot; Utilities</p>
+              </div>
+              <p class="text-sm font-bold" style="color: var(--saffron);">-₹2,450</p>
+            </div>
+            <div class="txn-row px-5" style="border-bottom: none;">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(26,86,50,0.1); color: var(--green);">
+                <i class="fa-solid fa-arrow-down text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium" style="color: var(--deep-maroon);">Cashback Reward</p>
+                <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Jul 14, 2026 &middot; Reward</p>
+              </div>
+              <p class="text-sm font-bold" style="color: var(--green);">+₹120</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fraud Detection Status -->
+        <div class="service-card" style="border-color: rgba(26,86,50,0.15);">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(26,86,50,0.1); color: var(--green);">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: var(--deep-maroon);">AI Fraud Detection</p>
+              <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Real-time ML monitoring active. 0 anomalies detected this month.</p>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium" style="background: rgba(26,86,50,0.1); color: var(--green);">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Protected
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== CHAT PAGE ====== -->
+    <div class="page" id="page-chat">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Secure Messaging</p>
+          <h1 class="text-xl font-bold" style="color: var(--deep-maroon);">Messages</h1>
+        </div>
+        <button class="btn-secondary text-xs px-4 py-2" onclick="showToast('New group chat created', 'fa-users')">
+          <i class="fa-solid fa-plus mr-1"></i> New Group
+        </button>
+      </div>
+
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Chat List -->
+        <div class="w-80 border-r flex-shrink-0 overflow-y-auto" style="border-color: rgba(201,168,76,0.08);" id="chat-list-panel">
+          <!-- Search -->
+          <div class="p-3">
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-xs" style="color: rgba(107,15,26,0.3);"></i>
+              <input type="text" class="input-field pl-9 py-2.5 text-xs" placeholder="Search conversations..." oninput="filterChats(this.value)" aria-label="Search chats">
+            </div>
+          </div>
+
+          <div id="chat-list">
+            <div class="chat-list-item active" onclick="openChat(0)">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">A</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-semibold truncate" style="color: var(--deep-maroon);">Arjun Sharma</p>
+                  <span class="text-[10px]" style="color: rgba(107,15,26,0.4);">2:30 PM</span>
+                </div>
+                <p class="text-xs truncate" style="color: rgba(107,15,26,0.45);">The meeting is at 5 PM tomorrow</p>
+              </div>
+              <span class="w-5 h-5 rounded-full text-white text-[10px] flex items-center justify-center font-bold flex-shrink-0" style="background: var(--saffron);">2</span>
+            </div>
+            <div class="chat-list-item" onclick="openChat(1)">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">F</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-semibold truncate" style="color: var(--deep-maroon);">Family Group</p>
+                  <span class="text-[10px]" style="color: rgba(107,15,26,0.4);">11:00 AM</span>
+                </div>
+                <p class="text-xs truncate" style="color: rgba(107,15,26,0.45);">Ma: Don't forget to bring sweets</p>
+              </div>
+            </div>
+            <div class="chat-list-item" onclick="openChat(2)">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">P</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-semibold truncate" style="color: var(--deep-maroon);">Priya Patel</p>
+                  <span class="text-[10px]" style="color: rgba(107,15,26,0.4);">Yesterday</span>
+                </div>
+                <p class="text-xs truncate" style="color: rgba(107,15,26,0.45);">Thanks for the payment!</p>
+              </div>
+            </div>
+            <div class="chat-list-item" onclick="openChat(3)">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">T</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-semibold truncate" style="color: var(--deep-maroon);">Team Atma-Nirbhar</p>
+                  <span class="text-[10px]" style="color: rgba(107,15,26,0.4);">Yesterday</span>
+                </div>
+                <p class="text-xs truncate" style="color: rgba(107,15,26,0.45);">Sprint review done. Great work!</p>
+              </div>
+              <span class="w-5 h-5 rounded-full text-white text-[10px] flex items-center justify-center font-bold flex-shrink-0" style="background: var(--saffron);">5</span>
+            </div>
+            <div class="chat-list-item" onclick="openChat(4)">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">R</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-semibold truncate" style="color: var(--deep-maroon);">Rahul Verma</p>
+                  <span class="text-[10px]" style="color: rgba(107,15,26,0.4);">Jul 15</span>
+                </div>
+                <p class="text-xs truncate" style="color: rgba(107,15,26,0.45);">Can you share the docs?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat View -->
+        <div class="flex-1 flex flex-col" id="chat-view-panel">
+          <!-- Chat Header -->
+          <div class="px-6 py-3 border-b flex items-center gap-3" style="border-color: rgba(201,168,76,0.08); background: rgba(253,245,230,0.3);">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-bold text-sm">A</div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold" style="color: var(--deep-maroon);" id="chat-header-name">Arjun Sharma</p>
+              <p class="text-[11px]" style="color: var(--green);">Online</p>
+            </div>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-amber-50 transition-colors" style="color: rgba(107,15,26,0.4);" onclick="showToast('Voice call starting...', 'fa-phone')">
+              <i class="fa-solid fa-phone text-sm"></i>
+            </button>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-amber-50 transition-colors" style="color: rgba(107,15,26,0.4);" onclick="showToast('Video call starting...', 'fa-video')">
+              <i class="fa-solid fa-video text-sm"></i>
+            </button>
+          </div>
+
+          <!-- Messages -->
+          <div class="flex-1 overflow-y-auto p-6 space-y-3" id="chat-messages">
+            <div class="flex justify-start"><div class="chat-bubble-ai"><p class="text-sm">Hey, are we still on for the project discussion?</p><span class="text-[10px] opacity-40 mt-1 block">2:15 PM</span></div></div>
+            <div class="flex justify-end"><div class="chat-bubble-user"><p class="text-sm">Yes! I've prepared the architecture docs</p><span class="text-[10px] opacity-60 mt-1 block">2:20 PM</span></div></div>
+            <div class="flex justify-start"><div class="chat-bubble-ai"><p class="text-sm">Perfect. The meeting is at 5 PM tomorrow</p><span class="text-[10px] opacity-40 mt-1 block">2:30 PM</span></div></div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="p-4 border-t" style="border-color: rgba(201,168,76,0.08); background: rgba(253,245,230,0.5);">
+            <div class="flex items-center gap-3">
+              <button class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-amber-100 transition-colors" style="color: rgba(107,15,26,0.4);" onclick="showToast('Attachment feature ready', 'fa-paperclip')">
+                <i class="fa-solid fa-paperclip"></i>
+              </button>
+              <input type="text" class="input-field flex-1" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()" aria-label="Chat message input">
+              <button class="w-9 h-9 rounded-lg flex items-center justify-center transition-colors" style="background: var(--saffron); color: white;" onclick="sendChatMessage()">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== MINI APPS PAGE ====== -->
+    <div class="page" id="page-miniapps">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Microservices Ecosystem</p>
+          <h1 class="text-xl font-bold" style="color: var(--deep-maroon);">Mini Apps</h1>
+        </div>
+        <button class="btn-primary text-xs px-4 py-2" onclick="showToast('Developer portal opening...', 'fa-code')">
+          <i class="fa-solid fa-code mr-1"></i> Developer Portal
+        </button>
+      </div>
+
+      <div class="p-6 md:p-8 space-y-6 overflow-y-auto flex-1">
+        <div class="service-card" style="border-color: rgba(212,160,23,0.2); background: linear-gradient(135deg, rgba(212,160,23,0.04), rgba(201,168,76,0.02));">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, var(--turmeric), var(--gold));">
+              <i class="fa-solid fa-puzzle-piece text-white text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm" style="color: var(--deep-maroon);">Modular Mini-App Framework</h3>
+              <p class="text-xs mt-1 leading-relaxed" style="color: rgba(107,15,26,0.5);">Each mini-app runs in its own container. Third-party developers can publish services that plug directly into the Atma-Nirbhar ecosystem without app updates. The Orchestrator Agent discovers and chains them automatically.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="mini-apps-grid">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROFILE PAGE ====== -->
+    <div class="page" id="page-profile">
+      <div class="rangoli-border"></div>
+      <div class="top-bar">
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase" style="color: var(--terracotta);">Account</p>
+          <h1 class="text-xl font-bold" style="color: var(--deep-maroon);">Profile</h1>
+        </div>
+        <button class="btn-secondary text-xs px-4 py-2" onclick="showToast('Profile saved successfully', 'fa-check')">
+          <i class="fa-solid fa-save mr-1"></i> Save Changes
+        </button>
+      </div>
+
+      <div class="p-6 md:p-8 space-y-6 overflow-y-auto flex-1">
+        <!-- Profile Header -->
+        <div class="service-card text-center" style="padding: 40px 24px;">
+          <div class="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 flex items-center justify-center text-white font-yatra text-4xl mx-auto mb-4 relative" style="animation: pulseGlow 3s ease-in-out infinite;">
+            A
+            <button class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style="background: var(--saffron);" onclick="showToast('Upload image feature ready', 'fa-camera')">
+              <i class="fa-solid fa-camera"></i>
+            </button>
+          </div>
+          <h2 class="text-xl font-bold" style="color: var(--deep-maroon);">Atma-Nirbhar User</h2>
+          <p class="text-xs mt-1" style="color: rgba(107,15,26,0.45);">user@atmanirbhar.in &middot; +91 98765 43210</p>
+          <div class="flex justify-center gap-2 mt-4">
+            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-medium" style="background: rgba(26,86,50,0.1); color: var(--green);">
+              <i class="fa-solid fa-check-circle"></i> Verified
+            </span>
+            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-medium" style="background: rgba(232,101,10,0.1); color: var(--saffron);">
+              <i class="fa-solid fa-crown"></i> Premium
+            </span>
+          </div>
+        </div>
+
+        <!-- Profile Form -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Full Name</label>
+            <input type="text" class="input-field" value="Atma-Nirbhar User" aria-label="Full name">
+          </div>
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Email</label>
+            <input type="email" class="input-field" value="user@atmanirbhar.in" aria-label="Email">
+          </div>
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Phone</label>
+            <input type="tel" class="input-field" value="+91 98765 43210" aria-label="Phone">
+          </div>
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Address</label>
+            <input type="text" class="input-field" value="Mumbai, Maharashtra" aria-label="Address">
+          </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div>
+          <h3 class="text-sm font-bold mb-3" style="color: var(--deep-maroon);">Security & Privacy</h3>
+          <div class="space-y-3">
+            <div class="service-card !p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-fingerprint text-lg" style="color: var(--saffron);"></i>
+                <div>
+                  <p class="text-sm font-medium" style="color: var(--deep-maroon);">Biometric Login</p>
+                  <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Use fingerprint or face recognition</p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" checked class="sr-only peer" onchange="showToast(this.checked ? 'Biometric login enabled' : 'Biometric login disabled', 'fa-fingerprint')">
+                <div class="w-10 h-5 rounded-full peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:rounded-full after:h-4 after:w-4 after:transition-all" style="background: var(--sand); after:background: white;" ></div>
+              </label>
+            </div>
+            <div class="service-card !p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-lock text-lg" style="color: var(--green);"></i>
+                <div>
+                  <p class="text-sm font-medium" style="color: var(--deep-maroon);">Zero-Trust Architecture</p>
+                  <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Every request is verified independently</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background: rgba(26,86,50,0.1); color: var(--green);">ACTIVE</span>
+            </div>
+            <div class="service-card !p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-key text-lg" style="color: var(--turmeric);"></i>
+                <div>
+                  <p class="text-sm font-medium" style="color: var(--deep-maroon);">End-to-End Encryption</p>
+                  <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">AES-256 for all messages and data</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background: rgba(26,86,50,0.1); color: var(--green);">ACTIVE</span>
+            </div>
+            <div class="service-card !p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-cube text-lg" style="color: var(--maroon);"></i>
+                <div>
+                  <p class="text-sm font-medium" style="color: var(--deep-maroon);">Blockchain Audit Trail</p>
+                  <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Immutable logs for all agentic actions</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background: rgba(26,86,50,0.1); color: var(--green);">ACTIVE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Container -->
+<div id="modal-container"></div>
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<script>
+// ======== DATA ========
+
+// Mini apps data
+const miniApps = [
+  { name: 'Food Delivery', icon: 'fa-utensils', color: '#E8650A', desc: 'Order from 50,000+ restaurants', status: 'Live', users: '2.4M' },
+  { name: 'Ride Hailing', icon: 'fa-car', color: '#1A5632', desc: 'Auto, cab, bike — all in one tap', status: 'Live', users: '1.8M' },
+  { name: 'Bill Payments', icon: 'fa-file-invoice', color: '#D4A017', desc: 'Electricity, gas, water, broadband', status: 'Live', users: '3.1M' },
+  { name: 'Insurance', icon: 'fa-shield', color: '#6B0F1A', desc: 'Health, vehicle, life insurance plans', status: 'Live', users: '890K' },
+  { name: 'Shopping', icon: 'fa-bag-shopping', color: '#D4566A', desc: 'Fashion, electronics, groceries', status: 'Live', users: '4.2M' },
+  { name: 'Travel', icon: 'fa-plane', color: '#1B1464', desc: 'Flights, trains, buses, hotels', status: 'Live', users: '1.5M' },
+  { name: 'Health', icon: 'fa-heart-pulse', color: '#C0392B', desc: 'Teleconsult, pharmacy, diagnostics', status: 'Live', users: '670K' },
+  { name: 'Education', icon: 'fa-graduation-cap', color: '#8E44AD', desc: 'Courses, certifications, tutoring', status: 'Beta', users: '340K' },
+  { name: 'Home Services', icon: 'fa-house-chimney', color: '#C75B39', desc: 'Plumber, electrician, cleaning, repair', status: 'Live', users: '1.1M' },
+  { name: 'DTH & Recharge', icon: 'fa-satellite-dish', color: '#2C3E50', desc: 'Mobile recharge, DTH, FASTag', status: 'Live', users: '5.6M' },
+  { name: 'Investments', icon: 'fa-chart-line', color: '#27AE60', desc: 'Mutual funds, stocks, gold, FD', status: 'Beta', users: '450K' },
+  { name: 'Government Services', icon: 'fa-landmark', color: '#7F8C8D', desc: 'Aadhaar, PAN, passport, certificates', status: 'Coming Soon', users: '—' },
+];
+
+// Chat data
+const chatData = [
+  {
+    name: 'Arjun Sharma',
+    avatar: 'A',
+    gradient: 'from-amber-400 to-orange-600',
+    online: true,
+    messages: [
+      { from: 'them', text: 'Hey, are we still on for the project discussion?', time: '2:15 PM' },
+      { from: 'me', text: 'Yes! I\'ve prepared the architecture docs', time: '2:20 PM' },
+      { from: 'them', text: 'The meeting is at 5 PM tomorrow', time: '2:30 PM' },
+    ]
+  },
+  {
+    name: 'Family Group',
+    avatar: 'F',
+    gradient: 'from-green-400 to-emerald-600',
+    online: false,
+    messages: [
+      { from: 'them', text: 'Ma: Don\'t forget to bring sweets for Diwali', time: '11:00 AM' },
+      { from: 'me', text: 'Already ordered from the best mithai shop!', time: '11:15 AM' },
+      { from: 'them', text: 'Pa: Great! What time will you reach?', time: '11:20 AM' },
+    ]
+  },
+  {
+    name: 'Priya Patel',
+    avatar: 'P',
+    gradient: 'from-rose-400 to-pink-600',
+    online: false,
+    messages: [
+      { from: 'me', text: 'Sent you ₹2,000 for the tickets', time: 'Yesterday' },
+      { from: 'them', text: 'Thanks for the payment!', time: 'Yesterday' },
+    ]
+  },
+  {
+    name: 'Team Atma-Nirbhar',
+    avatar: 'T',
+    gradient: 'from-indigo-400 to-purple-600',
+    online: false,
+    messages: [
+      { from: 'them', text: 'Sprint review done. Great work everyone!', time: 'Yesterday' },
+      { from: 'them', text: 'Next: Agent orchestration layer optimization', time: 'Yesterday' },
+      { from: 'me', text: 'I\'ll handle the multi-agent planning module', time: 'Yesterday' },
+      { from: 'them', text: 'Perfect. Let\'s sync Monday morning', time: 'Yesterday' },
+    ]
+  },
+  {
+    name: 'Rahul Verma',
+    avatar: 'R',
+    gradient: 'from-yellow-400 to-amber-600',
+    online: false,
+    messages: [
+      { from: 'them', text: 'Can you share the API docs for the payment microservice?', time: 'Jul 15' },
+    ]
+  }
+];
+
+// AI response data
+const aiResponses = {
+  'book a ride to the airport and message my family the eta': {
+    steps: [
+      { icon: 'fa-brain', text: 'Analyzing your request: Ride booking + family notification', status: 'Planning' },
+      { icon: 'fa-map-location-dot', text: 'Locating nearest available cab to your current position...', status: 'Executing' },
+      { icon: 'fa-car', text: 'Ride booked! OLA Auto — Driver: Rajesh Kumar — ETA: 12 mins — Fare: ₹380', status: 'Complete' },
+      { icon: 'fa-comment-dots', text: 'Message sent to Family Group: "Heading to airport. Cab arriving in 12 mins. Should reach by 4:30 PM."', status: 'Complete' },
+    ],
+    summary: 'Both tasks completed. Your family has been notified and the ride is on its way.'
+  },
+  'pay my electricity bill of ₹2,450 and update budget': {
+    steps: [
+      { icon: 'fa-brain', text: 'Breaking down: Bill payment + budget tracker update', status: 'Planning' },
+      { icon: 'fa-bolt', text: 'Fetching latest electricity bill from MSEB account...', status: 'Executing' },
+      { icon: 'fa-wallet', text: 'Payment of ₹2,450 processed via Razorpay. Transaction ID: TXN-AN-78432', status: 'Complete' },
+      { icon: 'fa-chart-pie', text: 'Budget tracker updated: Utilities category now at 78% monthly limit. ₹1,092 remaining.', status: 'Complete' },
+    ],
+    summary: 'Bill paid and budget updated. You have ₹1,092 left in your utilities budget this month.'
+  },
+  'order vegetarian dinner for 4 from the best rated restaurant nearby': {
+    steps: [
+      { icon: 'fa-brain', text: 'Decomposing: Restaurant search + filter veg + order for 4 people', status: 'Planning' },
+      { icon: 'fa-map-location-dot', text: 'Scanning top-rated vegetarian restaurants within 5 km...', status: 'Executing' },
+      { icon: 'fa-utensils', text: 'Found: Shree Thali House — 4.8 stars — Pure Veg — 2.3 km away', status: 'Complete' },
+      { icon: 'fa-cart-shopping', text: 'Order placed: 2 Paneer Thali + 2 Dal Makhani Thali + 4 Butter Naan + 2 Lassi. Total: ₹1,280', status: 'Complete' },
+      { icon: 'fa-wallet', text: 'Paid from wallet. Remaining balance: ₹23,300.00', status: 'Complete' },
+    ],
+    summary: 'Dinner ordered from Shree Thali House! Estimated delivery: 35-40 minutes.'
+  }
+};
+
+// Default AI response for unrecognized queries
+const defaultAIResponse = {
+  steps: [
+    { icon: 'fa-brain', text: 'Processing your request through the Orchestrator Agent...', status: 'Planning' },
+    { icon: 'fa-magnifying-glass', text: 'Identifying relevant mini-apps and services...', status: 'Executing' },
+    { icon: 'fa-gears', text: 'Chaining microservices to fulfill your goal...', status: 'Executing' },
+    { icon: 'fa-check-circle', text: 'Task pipeline created. Executing sub-tasks in parallel.', status: 'Complete' },
+  ],
+  summary: 'Your request has been processed. I\'m connecting the relevant services to complete this task. You\'ll receive a confirmation shortly.'
+};
+
+
+// ======== NAVIGATION ========
+let currentPage = 'home';
+
+function switchPage(pageId) {
+  // Remove active from all pages and nav items
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // Activate selected
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+
+  const navItem = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if (navItem) navItem.classList.add('active');
+
+  currentPage = pageId;
+}
+
+// Keyboard support for nav items
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      item.click();
+    }
+  });
+});
+
+
+// ======== TOAST SYSTEM ========
+function showToast(message, icon) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<i class="fa-solid ${icon || 'fa-circle-info'}" style="color: var(--gold);"></i> ${message}`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(30px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+
+// ======== MODAL SYSTEM ========
+function showModal(content) {
+  const container = document.getElementById('modal-container');
+  container.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal-box">
+        <button class="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center hover:bg-amber-50 transition-colors" style="color: rgba(107,15,26,0.3);" onclick="closeModal()" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+function closeModal() {
+  const container = document.getElementById('modal-container');
+  const overlay = container.querySelector('.modal-overlay');
+  if (overlay) {
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.2s ease';
+    setTimeout(() => container.innerHTML = '', 200);
+  }
+}
+
+
+// ======== AI CHAT ========
+function sendAIInput() {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  sendAIMessage(text);
+}
+
+function sendAIMessage(text) {
+  const container = document.getElementById('ai-chat-messages');
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'flex justify-end animate-slide-up';
+  userMsg.innerHTML = `<div class="chat-bubble-user"><p class="text-sm">${escapeHtml(text)}</p></div>`;
+  container.appendChild(userMsg);
+
+  // Hide suggestions
+  document.getElementById('ai-suggestions').style.display = 'none';
+
+  // Show typing indicator
+  const typingEl = document.createElement('div');
+  typingEl.className = 'flex items-start gap-3 animate-fade-in';
+  typingEl.id = 'ai-typing';
+  typingEl.innerHTML = `
+    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center flex-shrink-0">
+      <i class="fa-solid fa-om text-white text-xs"></i>
+    </div>
+    <div class="chat-bubble-ai">
+      <div class="typing-indicator"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  container.appendChild(typingEl);
+  container.scrollTop = container.scrollHeight;
+
+  // Find matching response
+  const key = text.toLowerCase().trim();
+  let response = null;
+  for (const [k, v] of Object.entries(aiResponses)) {
+    if (key.includes(k) || k.includes(key) || similarity(key, k) > 0.5) {
+      response = v;
+      break;
+    }
+  }
+  if (!response) response = defaultAIResponse;
+
+  // Simulate agent execution
+  setTimeout(() => {
+    typingEl.remove();
+
+    // Show step-by-step execution
+    response.steps.forEach((step, i) => {
+      setTimeout(() => {
+        const stepEl = document.createElement('div');
+        stepEl.className = 'flex items-start gap-3 animate-slide-up';
+
+        const statusColor = step.status === 'Complete' ? 'var(--green)' : step.status === 'Planning' ? 'var(--turmeric)' : 'var(--saffron)';
+        const statusIcon = step.status === 'Complete' ? 'fa-check-circle' : step.status === 'Planning' ? 'fa-lightbulb' : 'fa-spinner fa-spin';
+
+        stepEl.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-om text-white text-xs"></i>
+          </div>
+          <div class="chat-bubble-ai">
+            <div class="flex items-center gap-2 mb-1">
+              <i class="fa-solid ${step.icon} text-xs" style="color: var(--saffron);"></i>
+              <span class="text-[10px] font-semibold uppercase tracking-wider" style="color: ${statusColor};">${step.status}</span>
+            </div>
+            <p class="text-sm leading-relaxed">${step.text}</p>
+          </div>
+        `;
+        container.appendChild(stepEl);
+        container.scrollTop = container.scrollHeight;
+
+        // Show summary after last step
+        if (i === response.steps.length - 1) {
+          setTimeout(() => {
+            const summaryEl = document.createElement('div');
+            summaryEl.className = 'flex items-start gap-3 animate-slide-up';
+            summaryEl.innerHTML = `
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-white text-xs"></i>
+              </div>
+              <div class="chat-bubble-ai" style="border-color: rgba(26,86,50,0.2); background: rgba(26,86,50,0.03);">
+                <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--green);">Task Complete</p>
+                <p class="text-sm leading-relaxed">${response.summary}</p>
+              </div>
+            `;
+            container.appendChild(summaryEl);
+            container.scrollTop = container.scrollHeight;
+
+            // Show suggestions again
+            document.getElementById('ai-suggestions').style.display = 'flex';
+          }, 600);
+        }
+      }, i * 800);
+    });
+  }, 1500);
+}
+
+// Simple string similarity
+function similarity(a, b) {
+  const wordsA = a.split(/\s+/);
+  const wordsB = b.split(/\s+/);
+  const common = wordsA.filter(w => wordsB.includes(w));
+  return common.length / Math.max(wordsA.length, wordsB.length);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+
+// ======== WALLET ========
+let walletBalance = 24580;
+
+function showAddMoneyModal() {
+  showModal(`
+    <h3 class="font-bold text-lg mb-1" style="color: var(--deep-maroon);">Add Money</h3>
+    <p class="text-xs mb-5" style="color: rgba(107,15,26,0.45);">Add funds to your Atma-Nirbhar wallet via UPI</p>
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Amount</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold" style="color: var(--deep-maroon);">₹</span>
+          <input type="number" class="input-field pl-8" id="add-money-amount" placeholder="Enter amount" value="1000" aria-label="Amount to add">
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="mini-app-chip text-xs flex-1 justify-center" onclick="document.getElementById('add-money-amount').value=500">₹500</button>
+        <button class="mini-app-chip text-xs flex-1 justify-center" onclick="document.getElementById('add-money-amount').value=1000">₹1,000</button>
+        <button class="mini-app-chip text-xs flex-1 justify-center" onclick="document.getElementById('add-money-amount').value=5000">₹5,000</button>
+      </div>
+      <button class="btn-primary w-full mt-2" onclick="addMoney()">
+        <i class="fa-solid fa-plus mr-2"></i>Add Money via UPI
+      </button>
+    </div>
+  `);
+}
+
+function addMoney() {
+  const amount = parseInt(document.getElementById('add-money-amount').value) || 0;
+  if (amount <= 0) {
+    showToast('Please enter a valid amount', 'fa-triangle-exclamation');
+    return;
+  }
+  walletBalance += amount;
+  updateWalletDisplay();
+  closeModal();
+  showToast(`₹${amount.toLocaleString('en-IN')} added successfully`, 'fa-check-circle');
+
+  // Add transaction to list
+  const txnList = document.getElementById('transactions-list');
+  const newTxn = document.createElement('div');
+  newTxn.className = 'txn-row px-5 animate-slide-up';
+  newTxn.style.borderBottom = 'none';
+  newTxn.innerHTML = `
+    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(26,86,50,0.1); color: var(--green);">
+      <i class="fa-solid fa-arrow-down text-sm"></i>
+    </div>
+    <div class="flex-1">
+      <p class="text-sm font-medium" style="color: var(--deep-maroon);">Money Added</p>
+      <p class="text-[11px]" style="color: rgba(107,15,26,0.4);">Just now &middot; UPI</p>
+    </div>
+    <p class="text-sm font-bold" style="color: var(--green);">+₹${amount.toLocaleString('en-IN')}</p>
+  `;
+  txnList.insertBefore(newTxn, txnList.firstChild);
+  // Fix borders
+  const rows = txnList.querySelectorAll('.txn-row');
+  rows.forEach((r, i) => {
+    r.style.borderBottom = i < rows.length - 1 ? '' : 'none';
+  });
+}
+
+function showSendMoneyModal() {
+  showModal(`
+    <h3 class="font-bold text-lg mb-1" style="color: var(--deep-maroon);">Send Money</h3>
+    <p class="text-xs mb-5" style="color: rgba(107,15,26,0.45);">Transfer to any Atma-Nirbhar user or UPI ID</p>
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Recipient</label>
+        <input type="text" class="input-field" id="send-recipient" placeholder="Name or UPI ID" aria-label="Recipient">
+      </div>
+      <div>
+        <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Amount</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold" style="color: var(--deep-maroon);">₹</span>
+          <input type="number" class="input-field pl-8" id="send-amount" placeholder="Enter amount" aria-label="Amount to send">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-medium mb-1.5 block" style="color: var(--deep-maroon);">Note (optional)</label>
+        <input type="text" class="input-field" id="send-note" placeholder="What's this for?" aria-label="Payment note">
+      </div>
+      <button class="btn-primary w-full mt-2" onclick="sendMoney()">
+        <i class="fa-solid fa-paper-plane mr-2"></i>Send Money
+      </button>
+    </div>
+  `);
+}
+
+function sendMoney() {
+  const recipient = document.getElementById('send-recipient').value.trim();
+  const amount = parseInt(document.getElementById('send-amount').value) || 0;
+
+  if (!recipient) {
+    showToast('Please enter a recipient', 'fa-triangle-exclamation');
+    return;
+  }
+  if (amount <= 0) {
+    showToast('Please enter a valid amount', 'fa-triangle-exclamation');
+    return;
+  }
+  if (amount > walletBalance) {
+    showToast('Insufficient wallet balance', 'fa-triangle-exclamation');
+    return;
+  }
+
+  walletBalance -= amount;
+  updateWalletDisplay();
+  closeModal();
+  showToast(`₹${amount.toLocaleString('en-IN')} sent to ${recipient}`, 'fa-check-circle');
+}
+
+function updateWalletDisplay() {
+  const formatted = walletBalance.toLocaleString('en-IN');
+  document.getElementById('wallet-balance-main').innerHTML = `<span class="text-amber-300/50 text-2xl">₹</span> ${formatted}<span class="text-2xl">.00</span>`;
+  document.getElementById('wallet-balance-home').textContent = formatted;
+}
+
+
+// ======== CHAT ========
+let currentChatIndex = 0;
+
+function openChat(index) {
+  currentChatIndex = index;
+  const chat = chatData[index];
+
+  // Update active state in list
+  document.querySelectorAll('.chat-list-item').forEach((item, i) => {
+    item.classList.toggle('active', i === index);
+  });
+
+  // Update header
+  document.getElementById('chat-header-name').textContent = chat.name;
+
+  // Render messages
+  const msgContainer = document.getElementById('chat-messages');
+  msgContainer.innerHTML = '';
+  chat.messages.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = msg.from === 'me' ? 'flex justify-end animate-fade-in' : 'flex justify-start animate-fade-in';
+    const bubbleClass = msg.from === 'me' ? 'chat-bubble-user' : 'chat-bubble-ai';
+    div.innerHTML = `<div class="${bubbleClass}"><p class="text-sm">${escapeHtml(msg.text)}</p><span class="text-[10px] ${msg.from === 'me' ? 'opacity-60' : 'opacity-40'} mt-1 block">${msg.time}</span></div>`;
+    msgContainer.appendChild(div);
+  });
+  msgContainer.scrollTop = msgContainer.scrollHeight;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const msgContainer = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex justify-end animate-slide-up';
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+  div.innerHTML = `<div class="chat-bubble-user"><p class="text-sm">${escapeHtml(text)}</p><span class="text-[10px] opacity-60 mt-1 block">${timeStr}</span></div>`;
+  msgContainer.appendChild(div);
+  msgContainer.scrollTop = msgContainer.scrollHeight;
+
+  // Add to data
+  chatData[currentChatIndex].messages.push({ from: 'me', text, time: timeStr });
+
+  // Simulate reply
+  setTimeout(() => {
+    const replies = [
+      'Got it, thanks!',
+      'Sure, I\'ll look into it.',
+      'That sounds great!',
+      'Let me check and get back to you.',
+      'Perfect, proceeding as discussed.',
+      'Acknowledged!',
+    ];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    const replyDiv = document.createElement('div');
+    replyDiv.className = 'flex justify-start animate-slide-up';
+    replyDiv.innerHTML = `<div class="chat-bubble-ai"><p class="text-sm">${reply}</p><span class="text-[10px] opacity-40 mt-1 block">${timeStr}</span></div>`;
+    msgContainer.appendChild(replyDiv);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+    chatData[currentChatIndex].messages.push({ from: 'them', text: reply, time: timeStr });
+  }, 1200);
+}
+
+function filterChats(query) {
+  const items = document.querySelectorAll('.chat-list-item');
+  const q = query.toLowerCase();
+  items.forEach((item, i) => {
+    const name = chatData[i].name.toLowerCase();
+    item.style.display = name.includes(q) ? '' : 'none';
+  });
+}
+
+
+// ======== MINI APPS RENDER ========
+function renderMiniApps() {
+  const grid = document.getElementById('mini-apps-grid');
+  grid.innerHTML = '';
+
+  miniApps.forEach((app, i) => {
+    const statusColor = app.status === 'Live' ? 'var(--green)' : app.status === 'Beta' ? 'var(--turmeric)' : 'rgba(107,15,26,0.3)';
+    const card = document.createElement('div');
+    card.className = 'service-card animate-slide-up';
+    card.style.animationDelay = `${i * 0.05}s`;
+    card.onclick = () => showToast(`Opening ${app.name}...`, app.icon);
+    card.innerHTML = `
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg" style="background: ${app.color}15; color: ${app.color};">
+          <i class="fa-solid ${app.icon}"></i>
+        </div>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" style="color: ${statusColor}; background: ${statusColor}12;">${app.status}</span>
+      </div>
+      <h4 class="font-semibold text-sm mb-1" style="color: var(--deep-maroon);">${app.name}</h4>
+      <p class="text-xs leading-relaxed mb-3" style="color: rgba(107,15,26,0.45);">${app.desc}</p>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px]" style="color: rgba(107,15,26,0.35);"><i class="fa-solid fa-users mr-1"></i>${app.users} users</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-xs" style="color: var(--sand);"></i>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+
+// ======== FLOATING PARTICLES ========
+function createParticles() {
+  const container = document.getElementById('particles');
+  const count = 20;
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.top = Math.random() * 100 + 'vh';
+    p.style.width = (Math.random() * 3 + 1) + 'px';
+    p.style.height = p.style.width;
+
+    const colors = ['var(--gold)', 'var(--saffron)', 'var(--turmeric)', 'var(--terracotta)'];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // Animate with CSS
+    const duration = 8 + Math.random() * 12;
+    const delay = Math.random() * 10;
+    p.style.animation = `floatUp ${duration}s ease-in-out infinite ${delay}s`;
+    p.style.opacity = (Math.random() * 0.15 + 0.03).toFixed(2);
+
+    container.appendChild(p);
+  }
+}
+
+
+// ======== TOGGLE SWITCH FIX ========
+// Custom toggle styling since Tailwind CDN peer utilities are limited
+document.addEventListener('DOMContentLoaded', () => {
+  // Style the toggle switches
+  const style = document.createElement('style');
+  style.textContent = `
+    .peer:checked ~ div { background: var(--saffron) !important; }
+    .peer ~ div::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .peer:checked ~ div::after { transform: translateX(20px); }
+  `;
+  document.head.appendChild(style);
+});
+
+
+// ======== INIT ========
+document.addEventListener('DOMContentLoaded', () => {
+  renderMiniApps();
+  createParticles();
+});
+</script>
+</body>
+</html>
